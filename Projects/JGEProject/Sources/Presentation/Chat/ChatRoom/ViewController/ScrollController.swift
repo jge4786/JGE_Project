@@ -17,9 +17,6 @@ extension ChatRoomViewController: UIScrollViewDelegate {
             return
         }
         
-        if scrollView.contentOffset.y < 10 {
-        print("바운스 \(scrollView.contentOffset)")
-        }
         if scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height) {
             onTopReached()
         }

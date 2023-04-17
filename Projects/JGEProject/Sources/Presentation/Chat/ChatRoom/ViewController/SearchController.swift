@@ -1,12 +1,12 @@
 import UIKit
 extension ChatRoomViewController: UISearchBarDelegate {
     // 검색 버튼 클릭
-    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         onPressSearchButton()
     }
     
     // 검색 취소 버튼 클릭
-    public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         hideSearchBar()
     }
     
@@ -38,15 +38,14 @@ extension ChatRoomViewController: UISearchBarDelegate {
         if searchBar.isHidden {
             goBackButton.image = UIImage(systemName: "magnifyingglass")
             
-            navItem.rightBarButtonItems = [menuButton]
+            navBar.rightBarButtonItems = [menuButton]
             
             menuButton.action = #selector(hideSearchBar)
             menuButton.image = UIImage(systemName: "xmark")
             
             inputTextView.text = ""
             inputTextView.isEditable = false
-            inputTextView.setToAspectSize()
-//            inputTextViewHeight.constant = getTextViewHeight()
+            inputTextViewHeight.constant = getTextViewHeight()
             
             letterCountWrapperView.isHidden = true
             
@@ -61,7 +60,7 @@ extension ChatRoomViewController: UISearchBarDelegate {
             goBackButton.image = UIImage(systemName: "chevron.backward")
             
             
-            navItem.rightBarButtonItems = [menuButton, searchButton]
+            navBar.rightBarButtonItems = [menuButton, searchButton]
             
             
             menuButton.action = #selector(onPressMenuButton)
@@ -86,7 +85,6 @@ extension ChatRoomViewController: UISearchBarDelegate {
     
     @objc
     func hideSearchBar() {
-        print("취소")
         self.searchBar.text = ""
         self.searchBar.resignFirstResponder()
         handleSearchBar()

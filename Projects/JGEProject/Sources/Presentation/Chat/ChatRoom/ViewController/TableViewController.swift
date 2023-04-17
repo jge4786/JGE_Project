@@ -6,10 +6,8 @@ extension ChatRoomViewController:  UITableViewDataSource, UITableViewDelegate, U
         view.layoutIfNeeded()
         guard chatViewModel.chatData.value.count >= 0 else { return }
         contentTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-        print("테이블뷰 \(contentTableView.contentOffset.y)")
         contentTableView.contentOffset.y = 0
         contentTableView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
-        print("끝 \(contentTableView.contentOffset.y)")
         
         scrollToBottomButton.isHidden = true
     }

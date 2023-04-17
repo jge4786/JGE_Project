@@ -172,8 +172,7 @@ public class ChatRoomListViewController: UIViewController {
     
     @objc
     func onPressGPTButton(_ sender: Any) {
-        print(UIStoryboard(name: "ChatRoom", bundle: nil))
-        guard let nextVC = UIStoryboard(name: "ChatRoom", bundle: nil).instantiateViewController(withIdentifier: "ChatRoom") as? ChatRoomViewController else { return }
+        guard let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "ChatRoom") as? ChatRoomViewController else { return }
 
         guard let btn = sender as? UIButton else { return }
         
@@ -184,7 +183,8 @@ public class ChatRoomListViewController: UIViewController {
     @objc
     func onPressRoomEnteranceButton(_ sender: Any) {
         guard let button = sender as? UIButton else { return }
-        var nextVC = ChatRoomViewController()
+        
+        guard let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "ChatRoom") as? ChatRoomViewController else { return }
         
         switch tabId {
         case .chat:

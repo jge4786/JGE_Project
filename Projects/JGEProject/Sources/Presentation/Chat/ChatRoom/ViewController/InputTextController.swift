@@ -1,17 +1,16 @@
 import UIKit
 
 extension ChatRoomViewController {
-    func resetAfterSendingMessage(isUser: Bool) {
-        guard isUser else {
-            contentTableView.reloadData()
-            scrollToBottom()
-            return
-            
-        }
+    func resetAfterSendingMessage() {
+//        guard isUser else {
+//            contentTableView.reloadData()
+//            scrollToBottom()
+//            return
+//
+//        }
         
         inputTextView.text = ""
         inputTextView.setToAspectSize()
-//        inputTextViewHeight.constant = getTextViewHeight()
         
         textViewLine = 1
         
@@ -26,15 +25,16 @@ extension ChatRoomViewController {
         sendMessageButton.tintColor = Color.LighterBlack
     }
     
-    func sendMessage(owner: User, text: String?, isUser: Bool = true) {
+    func sendMessage(owner: User, text: String?, isGPTRoom: Bool = true) {
         
-        isUser
-        ? chatViewModel.sendMessage(owner: owner, text: text!)
-        : chatViewModel.sendMessageToGPT(text: inputTextView.text)
+        isGPTRoom
+        ? chatViewModel.sendMessageToGPT(text: inputTextView.text)
+        : chatViewModel.sendMessage(owner: owner, text: text!)
         
         
-        guard chatViewModel.isMessageEmpty(text) else { return }
-        resetAfterSendingMessage(isUser: isUser)
+        guard !chatViewModel.isMessageEmpty(text) else { return }
+        
+        resetAfterSendingMessage()
     }
 }
 

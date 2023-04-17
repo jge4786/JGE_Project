@@ -135,7 +135,7 @@ class ChatRoomViewController: UIViewController {
         
         sendMessage(owner: userData,
                     text: inputTextView.text,
-                    isUser: DataStorage.instance.isGPTRoom(roomId: roomId))
+                    isGPTRoom: DataStorage.instance.isGPTRoom(roomId: roomId))
         
 //        DataStorage.instance.isGPTRoom(roomId: roomId)
 //        ? sendMessageToGPT()
@@ -296,13 +296,13 @@ class ChatRoomViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setBind()
         
         
-        
-        addSearchBar()
         
         initializeSettings()
+        setBind()
+        
+        addSearchBar()
         
         self.searchBar.delegate = self
     }
@@ -339,7 +339,6 @@ class ChatRoomViewController: UIViewController {
     }
        
     deinit{
-        print("deinit")
         
         chatViewModel.handleDeinitProcess()
     }

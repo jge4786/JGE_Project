@@ -43,9 +43,9 @@ class ChatTableViewCell: UITableViewCell, TableViewCellBase {
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        contentView.backgroundColor = Color.Black
         initialize()
     }
     

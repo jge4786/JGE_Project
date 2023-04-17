@@ -215,8 +215,6 @@ extension APIService {
             messages.append(tmpArr)
         }
         
-        print(messages)
-        
         let jsonBody: [String : Any] = [
             "model": DefaultSettings.model,
             "messages": messages,
