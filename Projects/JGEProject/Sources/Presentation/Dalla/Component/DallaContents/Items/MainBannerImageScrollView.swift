@@ -56,6 +56,8 @@ class MainBannerImageScrollView: UIScrollView {
         let nextPageIndex = trunc((self.contentOffset.x + self.frame.width) / self.frame.width),
             nextPageOffset = CGPoint(x: nextPageIndex * self.frame.width, y: 0)
         
+        
+        
         self.setContentOffset(nextPageOffset, animated: true)
     }
         

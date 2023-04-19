@@ -4,8 +4,8 @@ import Then
 
 class UserListCollectionViewCell: UICollectionViewCell, DallaCollectionViewCellBase {
     var contentStackView = UIStackView().then {
-//        $0.distribution = .equalSpacing
-        $0.alignment = .center
+        $0.axis = .vertical
+//        $0.alignment = .center
         $0.backgroundColor = .green
     }
     
@@ -26,15 +26,26 @@ class UserListCollectionViewCell: UICollectionViewCell, DallaCollectionViewCellB
     }
     
     var nameLabel = UILabel().then {
-        $0.isHidden = true
+        $0.text = "홍길동"
     }
     
     var rankingView = UIImageView().then {
-        $0.isHidden = true
+        $0
+        
+//        $0.isHidden = true
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        
+        setSubViews()
+        setConstraints()
+        
+        
+            contentView.layer.cornerRadius = 8
+        
+        insideNameLabel.attributedText = FontFactory().getFont(text: "name", font: .suit, weight: .medium, size: 13)
     }
     
     required init?(coder: NSCoder) {
@@ -42,8 +53,6 @@ class UserListCollectionViewCell: UICollectionViewCell, DallaCollectionViewCellB
     }
     
     func initialize(ranking: Int) {
-        setSubViews()
-        setConstraints()
         setData(ranking: ranking)
     }
     
@@ -64,16 +73,16 @@ class UserListCollectionViewCell: UICollectionViewCell, DallaCollectionViewCellB
     
     func setConstraints() {
         contentStackView.snp.makeConstraints {
-            $0.top.leading.bottom.trailing.equalToSuperview()
+            $0.top.leading.equalToSuperview()
         }
         
         contentWrapperView.snp.makeConstraints {
-            $0.width.equalToSuperview()
+            $0.width.equalTo(116)
+            $0.height.equalTo(154)
         }
         
         liveStatusView.snp.makeConstraints {
             $0.leading.top.equalToSuperview()
-//            $0.width.height.equalTo(40)
         }
         
         insideNameLabel.snp.makeConstraints {
@@ -83,15 +92,15 @@ class UserListCollectionViewCell: UICollectionViewCell, DallaCollectionViewCellB
         rankingView.snp.makeConstraints {
             $0.bottom.equalToSuperview().inset(8)
             $0.trailing.equalToSuperview().inset(3)
-//            $0.height.equalTo(48)
-//            $0.width.equalTo(49)
+        }
+        
+        nameLabel.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
         }
     }
     
     func setData(ranking: Int) {
-        contentView.layer.cornerRadius = 8
         
-        insideNameLabel.attributedText = FontFactory().getFont(text: "name", font: .suit, weight: .medium, size: 13)
         
         rankingView.image = UIImage(named: "numberW\(ranking)") ?? UIImage(systemName: "xmark")
     }

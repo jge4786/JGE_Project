@@ -2,7 +2,7 @@ import UIKit
 import SnapKit
 import Then
 
-class TopTenView: UIStackView {
+class TopTenView: UIView {
     let title = "🏆 NOW TOP 10"
     
     var bannerTitleButton = UIButton().then {
@@ -17,25 +17,27 @@ class TopTenView: UIStackView {
         $0.distribution = .equalSpacing
     }
     
-    var userListCollectionView: UICollectionView = {
-        let flowLayout = UICollectionViewFlowLayout()
-        let collectionView = UICollectionView(frame: .init(x: 0, y: 0, width: 100, height: 100), collectionViewLayout: flowLayout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = UIColor.red
-
-        return collectionView
-    }()
+    var flowLayout = UICollectionViewFlowLayout().then {
+        $0.minimumInteritemSpacing = 8.0
+        $0.scrollDirection = .horizontal
+    }
+    
+    var userListCollectionView = UICollectionView(frame: CGRect.init(x: 0, y: 0, width: 100, height: 100), collectionViewLayout: UICollectionViewLayout.init()).then {
+        $0.showsHorizontalScrollIndicator = true
+        $0.showsVerticalScrollIndicator = false
+        $0.backgroundColor = UIColor.brown
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         UserListCollectionViewCell.register(collectionView: userListCollectionView)
-        
-        self.userListCollectionView.dataSource = self
-        
+        self.userListCollectionView.dataSource  = self
+        self.userListCollectionView.delegate    = self
+        userListCollectionView.collectionViewLayout = flowLayout
     }
     
-    required init(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
         
@@ -46,7 +48,7 @@ class TopTenView: UIStackView {
     }
     
     func setSubViews() {
-        self.addArrangedSubview(titleStackView)
+        self.addSubview(titleStackView)
         
         titleStackView.addArrangedSubview(bannerTitleButton)
         titleStackView.addArrangedSubview(tabButtonStackView)
@@ -55,21 +57,27 @@ class TopTenView: UIStackView {
         tabButtonStackView.addArrangedSubview(TopTenTabButton().make(type: .fan))
         tabButtonStackView.addArrangedSubview(TopTenTabButton().make(type: .team))
         
-        self.addArrangedSubview(userListCollectionView)
+        self.addSubview(userListCollectionView)
     }
     
     func setConstraints() {
+        titleStackView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+        }
         
+        userListCollectionView.snp.makeConstraints {
+            $0.top.equalTo(titleStackView.snp.bottom)
+            $0.leading.bottom.trailing.equalToSuperview()
+        }
     }
     
     func setData() {
-        self.axis = .vertical
     }
 }
 
-extension TopTenView: UICollectionViewDataSource {
+extension TopTenView: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return 2
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -78,5 +86,9 @@ extension TopTenView: UICollectionViewDataSource {
         cell.initialize(ranking: indexPath.row + 1)
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 116, height: 200)
     }
 }

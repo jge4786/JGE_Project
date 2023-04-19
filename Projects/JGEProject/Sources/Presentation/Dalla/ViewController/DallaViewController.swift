@@ -79,8 +79,6 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         self.navigationController?.navigationBar.isHidden = true
         view.backgroundColor = .white
         
-        getFontName()
-        
         
         contentScrollView.delegate = self
         mainBannerScrollView.delegate = self
@@ -118,20 +116,6 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
     
     
     
-    
-    
-    
-    func getFontName() {
-            for family in UIFont.familyNames {
-
-                let sName: String = family as String
-                print("family: \(sName)")
-                        
-                for name in UIFont.fontNames(forFamilyName: sName) {
-                    print("name: \(name as String)")
-                }
-            }
-        }
     
     func setSubview() {
         view.addSubview(contentScrollView)
@@ -182,7 +166,7 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         
         //TODO: 임시 높이 지정
         topTenView.snp.makeConstraints {
-            $0.height.equalTo(531)
+            $0.height.greaterThanOrEqualTo(200)
         }
         
         headerLogoButton.snp.makeConstraints {

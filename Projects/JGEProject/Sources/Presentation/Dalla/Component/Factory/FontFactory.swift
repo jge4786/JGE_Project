@@ -46,12 +46,14 @@ class FontFactory {
         font: FontType          = .system,
         weight: UIFont.Weight   = .regular,
         size: CGFloat           = 14.0,
+        color: UIColor          = .black,
         spacing: CGFloat        = 0.0
     ) -> NSMutableAttributedString {
         let string = NSMutableAttributedString(string: text),
             range = NSRange(location: 0, length: text.count)
         
         string.addAttribute(.font, value: getFont(font: font, weight: weight, size: size), range: range)
+        string.addAttribute(.foregroundColor, value: color, range: range)
         string.addAttribute(NSAttributedString.Key.kern, value: spacing, range: NSRange(location: 0, length: string.length - 1))
         
         return string
