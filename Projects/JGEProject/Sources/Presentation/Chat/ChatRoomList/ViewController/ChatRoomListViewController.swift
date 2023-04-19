@@ -4,13 +4,7 @@ import Then
 
 //TODO: 다른 구조(채팅방 이외)의 화면이 추가되었을 때도 대응되도록 변경
 
-public class ChatRoomListViewController: UIViewController {
-    public enum TabBarIdentifier {
-        case chat
-        case gpt
-        case dalla
-    }
-    
+public class ChatRoomListViewController: UIViewController, TabBarItemRootViewController {
     var roomListScrollView = UIScrollView()
     
     var roomStackView = UIStackView().then {

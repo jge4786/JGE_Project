@@ -19,7 +19,7 @@ class MyProjectTabBarController: UITabBarController {
 extension MyProjectTabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         guard let nav = viewController as? UINavigationController,
-              let nextView = nav.viewControllers.first as? ChatRoomListViewController
+              var nextView = nav.viewControllers.first as? TabBarItemRootViewController
         else { return }
         
         guard let selectedItem = tabBarController.tabBar.selectedItem,
@@ -34,6 +34,8 @@ extension MyProjectTabBarController: UITabBarControllerDelegate {
             nextView.tabId = .chat
         case 1:
             nextView.tabId = .gpt
+        case 2:
+            nextView.tabId = .dalla
         default:
             nextView.tabId = .chat
         }

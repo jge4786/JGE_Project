@@ -1,9 +1,12 @@
 import Foundation
+import Alamofire
+import SwiftyJSON
 
 final class APIService {
     static let shared = APIService()
     
     typealias ChatGPTResult = (Message) -> Void
+    typealias DallaBannerResult = (Any) -> Void
     typealias RequestResult = (Result<Data, Error>) -> Void
     typealias ResponseResult = (Result<Response, Error>) -> Void
     
@@ -51,6 +54,7 @@ final class APIService {
     
     private enum AuthMethod {
         case bearer
+        case none
     }
     
     private var isLoading = false
@@ -139,13 +143,20 @@ final class APIService {
         return dataTask
     }
     
-    private func makeDataTasks(data: [String: Any],
+//    private func makeDataTasks(request: URLRequest?, completion: @escaping ResponseResult) -> URLSessionDataTask? {
+//
+//    }
+    
+    private func makeDataTasks(request: URLRequest? = nil,
+                               data: [String: Any] = [:],
                                completion: @escaping ResponseResult
     ) -> URLSessionDataTask? {
         guard !isLoading else {
             return nil
         }
-        guard let request = makeDataRequest(authKey: APIKey.value, bodyData: data)
+        
+        guard request != nil,
+              let request = makeDataRequest(authKey: APIKey.value, bodyData: data)
         else {
             completion(.failure(NetworkError.badRequest))
             return nil
@@ -223,6 +234,24 @@ extension APIService {
         
         return jsonBody
     }
+    
+    private func makeDallaRequest() -> URLRequest? {
+        return makeDataRequest(
+            serverUrl: "http://61.80.148.23:3000/", endpoint: "RqBannerList", method: "GET", authMethod: .none, authKey: "", bodyData: ["pageNo": 2]
+        )
+    }
+    
+    private func makeAFHeader() -> HTTPHeaders {
+        var result = HTTPHeaders()
+        
+        result.add(name: "Content-Type", value: "application/json")
+        return result
+    }
+    
+    private func makeDallaRequestUsingAlarmofire() {
+        
+    }
+    
 }
 
 // 외부와 연결되는 곳
@@ -245,6 +274,25 @@ extension APIService {
 //                }
             case .failure(let error):
                 completion( Message(role: "error", content: error.localizedDescription) )
+            }
+        }
+    }
+    
+    func getDallaBannerData(completion: @escaping DallaBannerResult) {
+        AF.request("http://61.80.148.23:3000/RqBannerList",
+                          method: .get,
+                          parameters: ["pageNo": 2],
+                          headers: makeAFHeader())
+        .validate(statusCode: 200..<300)
+        .responseJSON { response in
+            switch response.result {
+            case .success(let data):
+                
+                completion(data)
+                break
+            case .failure(let error):
+                completion(error)
+                break
             }
         }
     }

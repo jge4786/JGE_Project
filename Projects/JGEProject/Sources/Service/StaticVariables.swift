@@ -5,6 +5,9 @@ struct Constants {
     ///디바이스의 크기
     static let deviceSize = UIScreen.main.bounds.size
     
+    //스테이터스바 높이
+    static let statusBarHeight = UIApplication.shared.windows.first{$0.isKeyWindow}?.safeAreaInsets.top ?? 0
+    
     ///채팅이 최대 몇 줄까지 출력될 수 있는지 결정하는 상수
     static let chatHeightLimit = 15
     
