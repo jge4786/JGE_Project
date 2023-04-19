@@ -1,25 +1,41 @@
 import UIKit
 
 class HeaderButton {
-    @frozen enum HeaderButtonStyle {
+    @frozen enum ButtonAction {
         case store
         case ranking
         case message
         case alarm
     }
     
-    private enum ButtonImage {
-        static let store = UIImage(named: "btnStore")
-        static let ranking = UIImage(named: "btnRanking")
-        static let message = UIImage(named: "btnMessage")
-        static let alarm = UIImage(named: "btnAlarm")
-    }
-    
-    private enum ButtonAction {
-        static let store = { print("Store") }
-        static let ranking = { print("ranking") }
-        static let message = { print("message") }
-        static let alarm = {print("alarm")}
+    enum HeaderButtonStyle: CaseIterable {
+        case store
+        case ranking
+        case message
+        case alarm
+        
+        var image: UIImage? {
+            switch self {
+            case .store: return UIImage(named: "btnStore")
+            case .ranking: return UIImage(named: "btnRanking")
+            case .message: return UIImage(named: "btnMessage")
+            case .alarm: return UIImage(named: "btnAlarm")
+            }
+        }
+        
+        var action: () -> () {
+            switch self {
+            case .store: return { print("Store") }
+            case .ranking: return { print("Store") }
+            case .message: return { print("Store") }
+            case .alarm: return { print("Store") }
+            }
+        }
+//
+//        static let store = UIImage(named: "btnStore")
+//        static let ranking = UIImage(named: "btnRanking")
+//        static let message = UIImage(named: "btnMessage")
+//        static let alarm = UIImage(named: "btnAlarm")
     }
     
     func make(with style: HeaderButtonStyle) -> UIButton {
@@ -30,17 +46,14 @@ class HeaderButton {
             $0.width.height.equalTo(40)
         }
         
-        switch style {
-        case .store:
-            button.setImage(ButtonImage.store, for: .normal)
-        case .ranking:
-            button.setImage(ButtonImage.ranking, for: .normal)
-        case .message:
-            button.setImage(ButtonImage.message, for: .normal)
-        case .alarm:
-            button.setImage(ButtonImage.alarm, for: .normal)
-        }
+        button.setImage(style.image, for: .normal)
+//        button.addTarget(self, action: #selector(tapAction(style)), for: .touchUpInside)
         
         return button
     }
+    
+//    @objc
+//    func tapAction(_ style: HeaderButtonStyle) {
+//        style.action
+//    }
 }

@@ -2,6 +2,7 @@ import UIKit
 import SnapKit
 import Then
 import SwiftyJSON
+import Kingfisher
 
 class MainBannerImageScrollView: UIScrollView {
     var isHolding = false
@@ -45,9 +46,9 @@ class MainBannerImageScrollView: UIScrollView {
         
         guard width != 0 else { return }
         
-        let targetView = (self.imageStackView.subviews[Int(trunc((self.contentOffset.x + width) / width)) - 1] as! MainBannerImageView)
+        let targetView = (self.imageStackView.subviews[Int(trunc((self.contentOffset.x + width) / width)) - 1] as! UIButton)
         
-        targetView.imageView.transform = CGAffineTransform(scaleX: scale, y: scale)
+        targetView.transform = CGAffineTransform(scaleX: scale, y: scale)
     }
     
     func moveToNext() {
@@ -64,18 +65,26 @@ class MainBannerImageScrollView: UIScrollView {
     func initialize(data: JSON) {
         self.isPagingEnabled = true
         self.showsHorizontalScrollIndicator = false
-        setSubViews(count: data.count)
+        setSubViews(data: data)
         setConstraints()
         setData(data: data)
         
         addTimer()
     }
     
-    func setSubViews(count: Int) {
+    func setSubViews(data: JSON) {
         self.addSubview(imageStackView)
         
-        for index in 0...count {
-            let view = MainBannerImageView()
+        for index in 0...data.count {
+            let view = UIButton()
+            
+            if index == data.count {
+                let url = URL(string: data[0]["image_background"].stringValue)
+                task = view.kf.setImage(with: url, for: .normal, placeholder: UIImage(systemName: "face.smiling"))
+            } else {
+                let url = URL(string: data[index]["image_background"].stringValue)
+                task = view.kf.setImage(with: url, for: .normal, placeholder: UIImage(systemName: "face.smiling"))
+            }
             
             imageStackView.addArrangedSubview(view)
             
@@ -87,6 +96,7 @@ class MainBannerImageScrollView: UIScrollView {
             $0.top.leading.bottom.trailing.height.equalToSuperview()
         }
         
+        
         imageStackView.subviews.forEach {
             $0.snp.makeConstraints {
                 $0.height.equalToSuperview()
@@ -94,19 +104,30 @@ class MainBannerImageScrollView: UIScrollView {
             }
         }
     }
+    var task: DownloadTask?
     
     func setData(data: JSON) {
         
-        for (index, view) in imageStackView.subviews.enumerated() {
-            let view = view as! MainBannerImageView
-            
-            
-            if index == imageStackView.subviews.count - 1 {
-                view.setData(image: UIImage(systemName: "xmark")!, title: "0\(index)_\(data[0]["title"].stringValue)", bjName: data[0]["mem_nick"].stringValue, isStar: data[0]["badgeSpecial"] == 1)
-            } else {
-                view.setData(image: UIImage(systemName: "xmark")!, title: "\(index)_\(data[index]["title"].stringValue)", bjName: data[index]["mem_nick"].stringValue, isStar: data[index]["badgeSpecial"] == 1)
-            }
-        }
-        
+//        for (index, view) in imageStackView.subviews.enumerated() {
+//            let view = view as! UIButton
+//            let url = URL(string: data[index]["image_background"].stringValue)
+//            task = view.kf.setImage(with: url, for: .normal)
+//        }
+//
+//            let view = view as! MainBannerImageView
+//
+//
+//            if index == imageStackView.subviews.count - 1 {
+//                view.setData(image: UIImage(systemName: "xmark")!, title: "0\(index)_\(data[0]["title"].stringValue)", bjName: data[0]["mem_nick"].stringValue, isStar: data[0]["badgeSpecial"] == 1)
+//            } else {
+//                view.setData(image: UIImage(systemName: "xmark")!, title: "\(index)_\(data[index]["title"].stringValue)", bjName: data[index]["mem_nick"].stringValue, isStar: data[index]["badgeSpecial"] == 1)
+//            }
+//        }
+//
+    }
+    
+    deinit {
+        task?.cancel()
+        task = nil
     }
 }

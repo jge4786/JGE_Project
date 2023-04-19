@@ -33,38 +33,24 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         $0.axis = .vertical
     }
     
+    var topTenSection = SectionView(title: "NOW TOP 10", hasTabBar: true)
+    var newBjSection = SectionView(title: "NEW BJ")
+    
+    
+    var topTenWrapperView = UIStackView().then {
+        $0.axis = .vertical
+    }
+    var newBjWrapperView = UIStackView().then {
+        $0.axis = .vertical
+    }
+    
+    lazy var userListScrollView = UserListScrollView(shouldShowNameLabel: false)
+    
+    lazy var newBjListScrollView = UserListScrollView(shouldShowNameLabel: true)
     
     var mainBannerScrollView = MainBannerImageScrollView()
     
     var favoriteScrollView = FavoriteListScrollView()
-    var favoriteWrapperView = UIView()
-    
-    var topTenView = TopTenView()
-    
-    var tmpScrollView = MainBannerImageScrollView()
-    
-    
-    
-    var apiTestButton = UIButton().then {
-        $0.snp.makeConstraints {
-            $0.height.width.equalTo(100)
-        }
-        $0.layer.borderWidth = 5
-        $0.backgroundColor = .black
-    }
-    @objc
-    func bannerAPITestFunc() {
-        APIService.shared.getDallaBannerData { [weak self] response in
-            dump(response)
-        }
-        print("zz")
-    }
-    
-    
-    
-    
-    
-    
     
     
     
@@ -88,17 +74,7 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         setConstraints()
         setData()
         
-//        view.addSubview(apiTestButton)
-//        apiTestButton.snp.makeConstraints {
-//            $0.bottom.leading.equalToSuperview().inset(30)
-//        }
-//        apiTestButton.addTarget(self, action: #selector(bannerAPITestFunc), for: .touchUpInside)
-        
-//        UIView.animate(withDuration: 3, delay: 0, options: [.repeat]) {
-//            self.headerWrapeprView.alpha = 1
-//        }
     }
-    
     
     
     
@@ -125,7 +101,22 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         contentStackView.addArrangedSubview(mainBannerScrollView)
         contentStackView.addArrangedSubview(favoriteScrollView)
         
-        contentStackView.addArrangedSubview(topTenView)
+        contentStackView.addArrangedSubview(topTenWrapperView)
+        contentStackView.addArrangedSubview(newBjWrapperView)
+        
+        topTenWrapperView.addArrangedSubview(topTenSection)
+        topTenWrapperView.addArrangedSubview(userListScrollView)
+        
+        newBjWrapperView.addArrangedSubview(newBjSection)
+        newBjWrapperView.addArrangedSubview(newBjListScrollView)
+        
+//        contentStackView.addArrangedSubview(topTenSection)
+//
+//        contentStackView.addArrangedSubview(userListScrollView)
+//
+//        contentStackView.addArrangedSubview(newBjSection)
+//        contentStackView.addArrangedSubview(newBjListScrollView)
+
         
         headerWrapeprView.addSubview(headerLogoButton)
         view.addSubview(headerViewButtonGroupStackView)
@@ -159,14 +150,13 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(diviceWidth)
         }
+
+        topTenWrapperView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+        }
         
-//        favoriteStackView.snp.makeConstraints {
-//            $0.edges.equalToSuperview()
-//        }
-        
-        //TODO: 임시 높이 지정
-        topTenView.snp.makeConstraints {
-            $0.height.greaterThanOrEqualTo(200)
+        newBjWrapperView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
         }
         
         headerLogoButton.snp.makeConstraints {
@@ -184,15 +174,14 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
     }
     
     func setData() {
+        contentScrollView.showsVerticalScrollIndicator = false
         APIService.shared.getDallaBannerData { [weak self] response in
             guard let self = self else { return }
             let json = JSON(response)
             
             self.mainBannerScrollView.initialize(data: json["BannerList"])
         }
-//        mainBannerScrollView.initialize()
         favoriteScrollView.initialize()
-        topTenView.initialize()
     }
     
     override func viewWillAppear(_ animated: Bool) {

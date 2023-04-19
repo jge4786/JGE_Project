@@ -57,5 +57,9 @@ struct Color {
     ///카카오톡 검정색 테마의 입력창 외곽선 색
     static var DarkerGray: UIColor { return UIColor(red: 70/255, green: 67/255, blue: 71/255, alpha: 1.0)}
     
+    
+    static var DallaTextBlack: UIColor { return UIColor(red: 32/255, green: 32/255, blue: 32/255, alpha: 1.0)}
+    
+    
     static var Transparent: UIColor { return UIColor(red: 0, green: 0, blue: 0, alpha: 0) }
 }

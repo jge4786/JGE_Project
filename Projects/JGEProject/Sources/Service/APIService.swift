@@ -7,6 +7,7 @@ final class APIService {
     
     typealias ChatGPTResult = (Message) -> Void
     typealias DallaBannerResult = (Any) -> Void
+    typealias DallaRoomListResult = (Any) -> Void
     typealias RequestResult = (Result<Data, Error>) -> Void
     typealias ResponseResult = (Result<Response, Error>) -> Void
     
@@ -281,6 +282,25 @@ extension APIService {
     func getDallaBannerData(completion: @escaping DallaBannerResult) {
         AF.request("http://61.80.148.23:3000/RqBannerList",
                           method: .get,
+                          parameters: ["pageNo": 2],
+                          headers: makeAFHeader())
+        .validate(statusCode: 200..<300)
+        .responseJSON { response in
+            switch response.result {
+            case .success(let data):
+                
+                completion(data)
+                break
+            case .failure(let error):
+                completion(error)
+                break
+            }
+        }
+    }
+    
+    func getDallaRoomListData(completion: @escaping DallaRoomListResult) {
+        AF.request("http://61.80.148.23:3000/RqRoomList",
+                          method: .post,
                           parameters: ["pageNo": 2],
                           headers: makeAFHeader())
         .validate(statusCode: 200..<300)

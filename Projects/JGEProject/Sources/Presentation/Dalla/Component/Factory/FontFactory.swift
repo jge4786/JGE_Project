@@ -35,7 +35,6 @@ class FontFactory {
             result = UIFont(name: getSUITFont(weight: weight), size: size)!
         }
         
-        
         return result
         
     }
@@ -48,13 +47,19 @@ class FontFactory {
         size: CGFloat           = 14.0,
         color: UIColor          = .black,
         spacing: CGFloat        = 0.0
-    ) -> NSMutableAttributedString {
-        let string = NSMutableAttributedString(string: text),
-            range = NSRange(location: 0, length: text.count)
+    ) -> NSAttributedString {
         
-        string.addAttribute(.font, value: getFont(font: font, weight: weight, size: size), range: range)
-        string.addAttribute(.foregroundColor, value: color, range: range)
-        string.addAttribute(NSAttributedString.Key.kern, value: spacing, range: NSRange(location: 0, length: string.length - 1))
+        let attributes: [NSAttributedString.Key : Any] = [
+            .font: getFont(font: font, weight: weight, size: size),
+            .foregroundColor: color,
+            .kern: spacing
+        ]
+        
+        let string = NSAttributedString(string: text, attributes: attributes)
+        
+//        string.addAttribute(.font, value: getFont(font: font, weight: weight, size: size), range: range)
+//        string.addAttribute(.foregroundColor, value: color, range: range)
+//        string.addAttribute(NSAttributedString.Key.kern, value: spacing, range: range)
         
         return string
     }

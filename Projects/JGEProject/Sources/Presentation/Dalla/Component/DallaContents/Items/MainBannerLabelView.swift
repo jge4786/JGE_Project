@@ -2,16 +2,9 @@ import UIKit
 import SnapKit
 import Then
 
-class MainBannerImageView: UIView {
+class MainBannerLabelView: UIView {
     let stackViewSpacing: CGFloat = 9.0
 
-    var imageView = UIImageView()
-    
-    var label = UILabel().then {
-        $0.numberOfLines = 2
-        $0.text = String(Int.random(in: 0...1000000))
-    }
-    
     lazy var infoStackView = UIStackView().then {
         $0.isLayoutMarginsRelativeArrangement = true
         $0.alignment = .lastBaseline
@@ -48,15 +41,13 @@ class MainBannerImageView: UIView {
         setConstraints()
     }
     
-    func setData(image: UIImage, title: String, bjName: String, isStar: Bool) {
-        imageView.image = image
+    func setData(title: String, bjName: String, isStar: Bool) {
         titleLabel.text = title
         bjNameLabel.text = bjName
         badgeView.isHidden = !isStar
     }
         
     func setSubViews() {
-        self.addSubview(imageView)
         self.addSubview(infoStackView)
         
         infoStackView.addArrangedSubview(badgeView)
@@ -65,10 +56,6 @@ class MainBannerImageView: UIView {
     }
     
     func setConstraints() {
-        imageView.snp.makeConstraints {
-            $0.top.leading.bottom.trailing.equalToSuperview()
-        }
-        
         infoStackView.snp.makeConstraints {
             $0.leading.bottom.trailing.equalToSuperview()
         }
