@@ -175,6 +175,8 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
     
     func setData() {
         contentScrollView.showsVerticalScrollIndicator = false
+        contentScrollView.canCancelContentTouches = true
+        
         APIService.shared.getDallaBannerData { [weak self] response in
             guard let self = self else { return }
             let json = JSON(response)
@@ -200,8 +202,6 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
 
 extension DallaViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-
-        
         if let scrollView = scrollView as? MainBannerImageScrollView {
             let offsetX = scrollView.contentOffset.x
             let contentWidth = scrollView.contentSize.width
@@ -216,17 +216,21 @@ extension DallaViewController: UIScrollViewDelegate {
             let offsetY = scrollView.contentOffset.y
 
             if offsetY < 0 {
-                let viewHeight = mainBannerScrollView.frame.height
-                let scale = (viewHeight - offsetY) / (viewHeight)
+                let translateValue  = offsetY / 2,
+                    viewHeight      = Constants.deviceSize.width,
+                    scale           = 1 + (-1 * offsetY / viewHeight)
                 
-                mainBannerScrollView.transform = CGAffineTransform(translationX: 0, y: offsetY / 2).scaledBy(x: scale, y: scale)
-                
+                mainBannerScrollView.changeScale(to: scale)
+                mainBannerScrollView.transform = CGAffineTransform(translationX: 0, y: translateValue).scaledBy(x: scale, y: scale)
             } else if offsetY >= 0 {
+                mainBannerScrollView.changeScale(to: 1)
                 mainBannerScrollView.transform = .identity
             }
-
-            let alphaValue = (offsetY - 200) / 100
-            headerWrapeprView.alpha = alphaValue
+            
+            if offsetY >= 50 && offsetY <= 250 {
+                let alphaValue = (offsetY - 150) / 100
+                headerWrapeprView.alpha = alphaValue
+            }
         }
     }
     
