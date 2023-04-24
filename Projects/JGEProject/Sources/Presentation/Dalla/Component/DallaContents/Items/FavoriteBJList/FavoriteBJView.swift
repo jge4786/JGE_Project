@@ -41,8 +41,7 @@ class FavoriteBJView: UIStackView {
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        
-    
+            
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = self.profileImageWrapperView.bounds
         let colors = isLive ? liveColor : offlineColor
@@ -75,8 +74,7 @@ class FavoriteBJView: UIStackView {
         self.axis = .vertical
         self.alignment = .center
         self.spacing = 6
-        
-        
+    
         setSubViews()
         setConstraints()
         setData()

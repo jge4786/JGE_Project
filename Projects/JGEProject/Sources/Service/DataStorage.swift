@@ -217,7 +217,6 @@ extension DataStorage {
         return result.roomId
     }
         
-    //TODO: 테스트용으로 userId: 0으로 생성. 시간 나면 내 userId 지정하고 이 userId로 초기화하도록
     @discardableResult
     func makeChatGPTRoom() -> ChatRoom {
         let gptRoomId = roomIndex

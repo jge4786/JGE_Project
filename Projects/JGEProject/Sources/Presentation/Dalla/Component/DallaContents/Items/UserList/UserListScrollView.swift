@@ -13,8 +13,8 @@ class UserListScrollView: UIScrollView {
         $0.distribution = .equalSpacing
     }
     
-    convenience init(viewModel: DallaViewModel, isRanking: Bool) {
-        self.init(frame: .zero)
+    init(viewModel: DallaViewModel, isRanking: Bool) {
+        super.init(frame: .zero)
         
         self.viewModel = viewModel
         self.isRanking = isRanking
@@ -40,12 +40,7 @@ class UserListScrollView: UIScrollView {
  
         
     }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
         
-    }
-    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }

@@ -6,7 +6,6 @@ class SectionView: UIStackView {
     var title: String = ""
     var hasTabBar: Bool = false
     
-    
     var titleButton = UIButton()
     
     var sectionTabBar = UIStackView().then {
@@ -24,13 +23,11 @@ class SectionView: UIStackView {
     }
     
     var bjButton = TabButton(type: .bj)
-    
     var fanButton = TabButton(type: .fan)
-    
     var teamButton = TabButton(type: .team)
     
-    convenience init(viewModel: DallaViewModel, title: String, hasTabBar: Bool = false) {
-        self.init(frame: .zero)
+    init(viewModel: DallaViewModel, title: String, hasTabBar: Bool = false) {
+        super.init(frame: .zero)
         self.title = title
         self.hasTabBar = hasTabBar
         self.viewModel = viewModel
@@ -38,10 +35,6 @@ class SectionView: UIStackView {
         setSubViews()
         setConstraints()
         setData()
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
     }
     
     required init(coder: NSCoder) {
@@ -87,14 +80,24 @@ class SectionView: UIStackView {
         
         self.distribution = .equalSpacing
         
-        titleButton.setAttributedTitle(
-            FontFactory().getFont(text: title, font: .suit, weight: .bold, size: 19, color: .black, spacing: -0.57)
-            , for: .normal)
+        let string = FontFactory().getFont(text: title,
+                                           font: .suit,
+                                           weight: .bold,
+                                           size: 19,
+                                           color: .black,
+                                           spacing: -0.57)
         
+        titleButton.setAttributedTitle(string, for: .normal)
+        
+        setButtonAction()
+    }
+    
+    func setButtonAction() {
         bjButton.addTarget(self, action: #selector(onPressBJButton), for: .touchUpInside)
         fanButton.addTarget(self, action: #selector(onPressFanButton), for: .touchUpInside)
         teamButton.addTarget(self, action: #selector(onPressTeamButton), for: .touchUpInside)
     }
+    
     
     @objc
     func onPressBJButton() {

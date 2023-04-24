@@ -17,35 +17,24 @@ class MainBannerLabelView: UIView {
         $0.image = UIImage(named: "badgeStar")
     }
     
-    var titleLabel = CommonLabel().then {
-        $0.setStyle( weight: .semibold, size: 24, spacing: -0.72)
-    }
-    
-    var bjNameLabel = CommonLabel().then {
-        $0.setStyle(spacing: -0.42)
-    }
+    var titleLabel = UILabel()
+    var bjNameLabel = UILabel()
     
     
     let colors: [CGColor] = [
         .init(gray: 1, alpha: 0),
         .init(gray: 1, alpha: 1)
     ]
+    
     lazy var gradientLayer = CAGradientLayer().then {
         $0.colors = colors
     }
     
     
-    convenience init() {
-        self.init(frame: .zero)
+    init() {
+        super.init(frame: .zero)
         
-        gradientLayer.colors = colors
-
         self.layer.insertSublayer(gradientLayer, at: 0)
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
         self.make()
     }
     
@@ -60,8 +49,8 @@ class MainBannerLabelView: UIView {
     }
     
     func setData(title: String, bjName: String, isStar: Bool) {
-        titleLabel.text = title
-        bjNameLabel.text = bjName
+        titleLabel.attributedText = FontFactory().getFont(text: title, font: .suit, weight: .semibold, size: 24, color: Color.DallaTextBlack, spacing: -0.72)
+        bjNameLabel.attributedText = FontFactory().getFont(text: bjName, font: .suit, weight: .regular, size: 14, color: Color.DallaTextBlack, spacing: -0.42)
         badgeView.isHidden = !isStar
         
         layoutSubviews()

@@ -28,8 +28,6 @@ class FavoriteListScrollView: UIScrollView {
     }
     
     func initialize() {
-        
-        
         setSubViews()
         setConstraints()
         setData()
@@ -54,7 +52,6 @@ class FavoriteListScrollView: UIScrollView {
         self.addSubview(contentStackView)
         
         data?.forEach {
-//            let bjView = FavoriteBJView()
             let bjView = FavoriteBJView(name: $0.memNick , image: $0.imageBackground, isLive: $0.badgeSpecial)
             contentStackView.addArrangedSubview(bjView)
         }

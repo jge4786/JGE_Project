@@ -3,6 +3,8 @@ import SnapKit
 import Then
 
 final class MainBannerCollectionView: UICollectionView {
+    var viewModel: DallaViewModel?
+    
     var isHolding = false
     var bannerIndex: CGFloat = 0.0
     var timer: DispatchSourceTimer?
@@ -12,16 +14,27 @@ final class MainBannerCollectionView: UICollectionView {
         $0.minimumLineSpacing = 0
         $0.scrollDirection = .horizontal
     }
-
     
-    init() {
+    init(viewModel: DallaViewModel) {
         super.init(frame: .zero, collectionViewLayout: flowlayout)
         self.isPagingEnabled = true
         self.showsHorizontalScrollIndicator = false
+        
+        self.viewModel = viewModel
+        
+        viewModel.topOffsetY.bind { [weak self] offset in
+            guard let self = self else { return }
+            
+            let translateValue  = (offset - Constants.statusBarHeight) / 2,
+                viewHeight      = Constants.deviceSize.width,
+                scale           = 1 + (-1 * (offset + Constants.statusBarHeight) / viewHeight)
+            
+            self.transform = CGAffineTransform(translationX: 0, y: translateValue).scaledBy(x: scale, y: scale)
+        }
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
     }
     
     func resumeTimer() {
@@ -66,14 +79,5 @@ final class MainBannerCollectionView: UICollectionView {
         self.showsHorizontalScrollIndicator = false
         
         addTimer()
-    }
-    
-    func setSubViews(count: Int) {
-    }
-    
-    func setConstraints() {
-    }
-        
-    func setData() {
     }
 }

@@ -7,19 +7,19 @@ class DallaViewModel {
     
     var data: Observable<[DallaBannerInfo]?> = Observable(nil)
     var topList: Observable<[DallaBannerInfo]?> = Observable(nil)
-    var listType: Observable<TopTenType> = Observable(.bj)
+    var bannerScale: Observable<Double> = Observable(1.0)
+    var topOffsetY: Observable<Double> = Observable(0)
     
     init() {
         APIService.shared.getDallaBannerData { [weak self] apiData in
-                        guard let self = self,
-                              let data = apiData as? [DallaBannerInfo] else { return }
+            guard let self = self,
+                  let data = apiData as? [DallaBannerInfo] else { return }
             self.data.value = data
             self.changeListType(to: .bj)
         }
     }
     
     func changeListType(to type: TopTenType) {
-        listType.value = type
         guard let data = data.value else { return }
         switch type {
         case .bj:

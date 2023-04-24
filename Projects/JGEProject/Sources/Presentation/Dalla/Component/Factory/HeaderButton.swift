@@ -31,11 +31,6 @@ class HeaderButton {
             case .alarm: return { print("Store") }
             }
         }
-//
-//        static let store = UIImage(named: "btnStore")
-//        static let ranking = UIImage(named: "btnRanking")
-//        static let message = UIImage(named: "btnMessage")
-//        static let alarm = UIImage(named: "btnAlarm")
     }
     
     func make(with style: HeaderButtonStyle) -> UIButton {
@@ -47,13 +42,6 @@ class HeaderButton {
         }
         
         button.setImage(style.image, for: .normal)
-//        button.addTarget(self, action: #selector(tapAction(style)), for: .touchUpInside)
-        
         return button
     }
-    
-//    @objc
-//    func tapAction(_ style: HeaderButtonStyle) {
-//        style.action
-//    }
 }

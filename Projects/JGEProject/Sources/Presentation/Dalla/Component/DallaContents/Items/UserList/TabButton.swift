@@ -5,17 +5,14 @@ import Then
 class TabButton: ExtendedButton {
     var type: DallaViewModel.TopTenType = .bj
     
-    convenience init(type: DallaViewModel.TopTenType) {
-        self.init(frame: .zero)
+    init(type: DallaViewModel.TopTenType) {
+        super.init(frame: .zero)
         
         self.type = type
         
         initialize()
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -39,18 +36,22 @@ class TabButton: ExtendedButton {
         self.backgroundColor = .white
         var text = ""
         
+        //TODO: rawValue 사용?
         switch type {
-        case .bj:   text = "BJ"
-        case .fan:  text = "FAN"
-        case .team: text = "TEAM"
+        case .bj:
+            text = "BJ"
+        case .fan:
+            text = "FAN"
+        case .team:
+            text = "TEAM"
         }
         
-        self.setAttributedTitle(FontFactory().getFont(text: text,
-                                                      font: .suit,
-                                                      weight: .bold,
-                                                      size: 14,
-                                                      color: Color.DallaTextBlack)
-                                , for: .normal)
+        let string = FontFactory().getFont(text: text,
+                                           font: .suit,
+                                           weight: .bold,
+                                           size: 14)
+        
+        self.setAttributedTitle(string, for: .normal)
         
         self.changeSelectedState(to: type == .bj)
     }
@@ -62,12 +63,13 @@ class TabButton: ExtendedButton {
             color = Color.DallaTextBlack
         }
         
-        self.setAttributedTitle(FontFactory().getFont(text: self.currentAttributedTitle?.string ?? "asdf",
-                                                      font: .suit,
-                                                      weight: .bold,
-                                                      size: 14,
-                                                      color: color)
-                                , for: .normal)
+        let string = FontFactory().getFont(text: self.currentAttributedTitle?.string ?? "asdf",
+                                           font: .suit,
+                                           weight: .bold,
+                                           size: 14,
+                                           color: color)
+        
+        self.setAttributedTitle(string, for: .normal)
         
         self.layoutIfNeeded()
     }

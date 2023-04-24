@@ -24,17 +24,12 @@ final class UserView: UIButton {
         self.init(isRanking: true)
     }
     
-    convenience init(isRanking: Bool, status: LiveStatus = .none) {
-        self.init(frame: .zero)
+    init(isRanking: Bool, status: LiveStatus = .none) {
+        super.init(frame: .zero)
         
         setSubViews(isRanking: isRanking)
         setConstraints(isRanking: isRanking)
         setData(status: status)
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
     }
     
     required init?(coder: NSCoder) {

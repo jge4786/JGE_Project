@@ -54,7 +54,7 @@ class FontFactory {
         font: FontType          = .system,
         weight: UIFont.Weight   = .regular,
         size: CGFloat           = 14.0,
-        color: UIColor          = .black,
+        color: UIColor          = Color.DallaTextBlack,
         spacing: CGFloat        = 0.0
     ) -> NSAttributedString {
         
@@ -65,10 +65,6 @@ class FontFactory {
         ]
         
         let string = NSAttributedString(string: text, attributes: attributes)
-        
-//        string.addAttribute(.font, value: getFont(font: font, weight: weight, size: size), range: range)
-//        string.addAttribute(.foregroundColor, value: color, range: range)
-//        string.addAttribute(NSAttributedString.Key.kern, value: spacing, range: range)
         
         return string
     }

@@ -16,17 +16,12 @@ class UserListItem: UIStackView {
         $0.textAlignment = .center
     }
     
-    convenience init(data: DallaBannerInfo, isRanking: Bool, index: Int = 0) {
-        self.init(frame: .zero)
+    init(data: DallaBannerInfo, isRanking: Bool, index: Int = 0) {
+        super.init(frame: .zero)
         self.data = data
         setSubViews(isRanking: isRanking, index: index)
         setConstraints()
         setData()
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
     }
     
     required init(coder: NSCoder) {

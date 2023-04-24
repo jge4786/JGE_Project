@@ -8,7 +8,7 @@ class MainBannerCell: UICollectionViewCell, DallaCollectionViewCellBase {
     var bannerIndex: CGFloat = 0.0
     var timer: DispatchSourceTimer?
     let timerInterval = 5
-
+    
     var data: DallaBannerInfo?
     
     var imageView = UIImageView()
@@ -20,31 +20,26 @@ class MainBannerCell: UICollectionViewCell, DallaCollectionViewCellBase {
         
         guard width != 0 else { return }
         
-        self.transform = CGAffineTransform(scaleX: 1 / scale, y: 1 / scale)
+        labelView.transform = CGAffineTransform(scaleX: 1 / scale, y: 1 / scale)
     }
-     
+    
     func initialize(data: DallaBannerInfo) {
         self.data = data
         setSubViews()
         setConstraints()
         setData()
         
+        let gradientLayer = CAGradientLayer()
         
-            print("asdfsdfasd!!!@*(!Y#&Y&*#$&*#^7*")
-            let gradientLayer = CAGradientLayer()
-
-            gradientLayer.frame = self.bounds
-
-            let colors: [CGColor] = [
-                .init(gray: 1, alpha: 0),
-                .init(gray: 1, alpha: 0),
-                .init(gray: 1, alpha: 1)
-            ]
-
-            gradientLayer.colors = colors
-
-//            self.layer.insertSublayer(gradientLayer, at: 1)
-//        self.layer.addSublayer(gradientLayer)
+        gradientLayer.frame = self.bounds
+        
+        let colors: [CGColor] = [
+            .init(gray: 1, alpha: 0),
+            .init(gray: 1, alpha: 0),
+            .init(gray: 1, alpha: 1)
+        ]
+        
+        gradientLayer.colors = colors
     }
     
     func setSubViews() {
@@ -63,7 +58,7 @@ class MainBannerCell: UICollectionViewCell, DallaCollectionViewCellBase {
         }
         layoutSubviews()
     }
-        
+    
     func setData() {
         
         let url = URL(string: data?.imageBackground ?? "")
@@ -71,8 +66,8 @@ class MainBannerCell: UICollectionViewCell, DallaCollectionViewCellBase {
         
         
         labelView.setData(title: "\(data?.title ?? "")",
-                     bjName: data?.memNick ?? "홍길동",
-                     isStar: data?.badgeSpecial ?? false)
+                          bjName: data?.memNick ?? "홍길동",
+                          isStar: data?.badgeSpecial ?? false)
         
     }
 }
