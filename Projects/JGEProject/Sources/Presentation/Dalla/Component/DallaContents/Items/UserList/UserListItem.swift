@@ -10,15 +10,16 @@ class UserListItem: UIStackView {
 //        $0.setImage(UIImage(systemName: "cart.fill"), for: .normal)
 //    }
     
+    var data: DallaBannerInfo?
+    
     var userListNameLabel = UILabel().then {
         $0.textAlignment = .center
-        $0.attributedText = FontFactory().getFont(text: "홍길동", font: .suit, weight: .regular, size: 20, color: .gray)
     }
     
-    convenience init(shouldShowNameLabel: Bool, index: Int = 0) {
+    convenience init(data: DallaBannerInfo, isRanking: Bool, index: Int = 0) {
         self.init(frame: .zero)
-        
-        setSubViews(shouldShowNameLabel: shouldShowNameLabel, index: index)
+        self.data = data
+        setSubViews(isRanking: isRanking, index: index)
         setConstraints()
         setData()
     }
@@ -33,12 +34,12 @@ class UserListItem: UIStackView {
     }
     
     
-    func setSubViews(shouldShowNameLabel: Bool, index: Int) {
+    func setSubViews(isRanking: Bool, index: Int) {
         
-        userView.initialize(isRanking: !shouldShowNameLabel, ranking: index)
+        userView.initialize(data: data, isRanking: isRanking, ranking: index)
         self.addArrangedSubview(userView)
         
-        guard shouldShowNameLabel else { return }
+        guard isRanking else { return }
         
         self.addArrangedSubview(userListNameLabel)
     }
@@ -53,6 +54,12 @@ class UserListItem: UIStackView {
     }
     
     func setData() {
+        userListNameLabel.attributedText = FontFactory().getFont(text: data?.memNick ?? "",
+                                                                 font: .noto,
+                                                                 weight: .regular,
+                                                                 size: 15,
+                                                                 color: Color.DallaTextLightBlack,
+                                                                 spacing: -0.75)
         self.spacing = 3
         self.axis = .vertical
     }

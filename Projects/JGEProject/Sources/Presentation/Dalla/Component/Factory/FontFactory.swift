@@ -4,6 +4,7 @@ class FontFactory {
     enum FontType {
         case suit
         case system
+        case noto
     }
     
     func getSUITFont(weight: UIFont.Weight) -> String {
@@ -19,6 +20,12 @@ class FontFactory {
         }
     }
     
+    func getNotoFont(weight: UIFont.Weight) -> String {
+        switch weight {
+        case .regular, _:
+            return "NotoSansKR-Regular"
+        }
+    }
     
     /// 라벨의 폰트 설정.
     /// 기본값: size: 14.0, weight: .regular, spacing: 0.0
@@ -33,6 +40,8 @@ class FontFactory {
             result = .systemFont(ofSize: size, weight: weight)
         case .suit:
             result = UIFont(name: getSUITFont(weight: weight), size: size)!
+        case .noto:
+            result = UIFont(name: getNotoFont(weight: weight), size: size)!
         }
         
         return result

@@ -3,18 +3,41 @@ import SnapKit
 import Then
 
 class UserListScrollView: UIScrollView {
+    var viewModel: DallaViewModel?
+    var data: [DallaBannerInfo] = []
+    var isRanking = false
+    
     var userListStackView = UIStackView().then {
         $0.alignment = .center
         $0.spacing = 8
         $0.distribution = .equalSpacing
     }
     
-    convenience init(shouldShowNameLabel: Bool) {
+    convenience init(viewModel: DallaViewModel, isRanking: Bool) {
         self.init(frame: .zero)
         
-        setSubViews(shouldShowNameLabel: shouldShowNameLabel)
-        setConstraints()
-        setData()
+        self.viewModel = viewModel
+        self.isRanking = isRanking
+        
+        
+        if isRanking {
+            viewModel.topList.bind {
+                guard let data = $0 else { return }
+                
+                self.data = data
+                
+                self.initialize()
+            }
+        } else {
+            viewModel.data.bind {
+                guard let data = $0 else { return }
+                
+                self.data = data
+                
+                self.initialize()
+            }
+        }
+ 
         
     }
     
@@ -27,12 +50,24 @@ class UserListScrollView: UIScrollView {
         super.init(coder: coder)
     }
     
+    func initialize() {
+        removeAllSubview()
+        setSubViews()
+        setConstraints()
+        setData()
+    }
     
-    func setSubViews(shouldShowNameLabel: Bool) {
+    func removeAllSubview() {
+        userListStackView.subviews.forEach { view in
+            view.removeFromSuperview()
+        }
+    }
+    
+    func setSubViews() {
         self.addSubview(userListStackView)
         
-        for index in 1...5 {
-            let item = UserListItem(shouldShowNameLabel: shouldShowNameLabel, index: index)
+        for index in 1...data.count {
+            let item = UserListItem(data: data[index - 1], isRanking: isRanking, index: index)
             
             userListStackView.addArrangedSubview(item)
             

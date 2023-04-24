@@ -10,6 +10,27 @@ class MainBannerImageScrollView: UIScrollView {
     var timer: DispatchSourceTimer?
     let timerInterval = 5
     
+    var viewModel: DallaViewModel?
+    
+    init(viewModel: DallaViewModel) {
+        super.init(frame: .zero)
+        
+        self.viewModel = viewModel
+        
+        viewModel.data.bind { [weak self] vmData in
+            guard let self = self,
+                  let vmData = vmData
+            else {
+                return
+            }
+            
+            self.initialize(data: vmData)
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
     var imageStackView = UIStackView()
     
@@ -42,6 +63,7 @@ class MainBannerImageScrollView: UIScrollView {
     }
     
     func changeScale(to scale: Double) {
+        guard imageStackView.subviews.count > 0 else { return }
         let width = self.frame.width
         
         guard width != 0 else { return }
@@ -62,12 +84,13 @@ class MainBannerImageScrollView: UIScrollView {
         self.setContentOffset(nextPageOffset, animated: true)
     }
         
-    func initialize(data: JSON) {
+    func initialize(data: [DallaBannerInfo]) {
         self.isPagingEnabled = true
         self.showsHorizontalScrollIndicator = false
         setSubViews(count: data.count)
         setConstraints()
         setData(data: data)
+        
         
         addTimer()
     }
@@ -110,7 +133,7 @@ class MainBannerImageScrollView: UIScrollView {
         }
     }
         
-    func setData(data: JSON) {
+    func setData(data: [DallaBannerInfo]) {
         
         for (index, subView) in imageStackView.subviews.enumerated() {
             subView.subviews.forEach {
@@ -119,25 +142,30 @@ class MainBannerImageScrollView: UIScrollView {
                                 ? 0
                                 : index
                     
-                    let url = URL(string: data[index]["image_background"].stringValue)
-                    view.kf.setImage(with: url, for: .normal, completionHandler:  { _ in
-                        let gradientLayer = CAGradientLayer()
-                        gradientLayer.frame = view.bounds
-                        let colors: [CGColor] = [
-                            .init(gray: 1, alpha: 0),
-                            .init(gray: 1, alpha: 0),
-                            .init(gray: 1, alpha: 1)
-                        ]
-                        
-                        gradientLayer.colors = colors
-                        
-                        view.layer.addSublayer(gradientLayer)
-                    })
+                    let url = URL(string: data[index].imageBackground)
+                    view.kf.setImage(with: url, for: .normal, placeholder: UIImage(named: "defaultBanner"))
+                    
+                    
+                    let gradientLayer = CAGradientLayer()
+                    gradientLayer.frame = view.bounds
+                    let colors: [CGColor] = [
+                        .init(gray: 1, alpha: 0),
+                        .init(gray: 1, alpha: 0),
+                        .init(gray: 1, alpha: 1)
+                    ]
+                    
+                    gradientLayer.colors = colors
+                    
+                    view.layer.addSublayer(gradientLayer)
                 } else if let view = $0 as? MainBannerLabelView {
                     if index == imageStackView.subviews.count - 1 {
-                        view.setData(title: "0\(index)_\(data[0]["title"].stringValue)", bjName: data[0]["mem_nick"].stringValue, isStar: data[0]["badgeSpecial"] == 1)
+                        view.setData(title: "0\(index)_\(data.first?.title)",
+                                     bjName: data.first?.memNick ?? "홍길동",
+                                     isStar: data.first?.badgeSpecial ?? false)
                     } else {
-                        view.setData(title: "\(index)_\(data[index]["title"].stringValue)", bjName: data[index]["mem_nick"].stringValue, isStar: data[index]["badgeSpecial"] == 1)
+                        view.setData(title: "\(index)_\(data[index].title)",
+                                     bjName: data[index].memNick,
+                                     isStar: data[index].badgeSpecial)
                     }
                 }
                 

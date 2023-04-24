@@ -12,6 +12,13 @@ final class APIService {
     typealias ResponseResult = (Result<Response, Error>) -> Void
     
     
+    let mock: [DallaBannerInfo] = [
+        DallaBannerInfo(memNick: "하나", title: "하나제목", imageBackground: "https://s.pstatic.net/static/www/mobile/edit/20230422/cropImg_728x360_124104332765696105.jpeg", badgeSpecial: true),
+        DallaBannerInfo(memNick: "둘", title: "둘제목", imageBackground: "https://s.pstatic.net/static/www/mobile/edit/20230422/cropImg_728x360_124104265093256215.jpeg", badgeSpecial: false),
+        DallaBannerInfo(memNick: "셋", title: "셋제목", imageBackground: "https://s.pstatic.net/dthumb.phinf/?src=%22https%3A%2F%2Fsports-phinf.pstatic.net%2F20230423_163%2F16822610444117scsF_PNG%2F%25BD%25BA%25C5%25A9%25B8%25B0%25BC%25A6_2023-04-23_%25BF%25C0%25C8%25C4_11.43.51.png%22&type=nf728_360", badgeSpecial: false),
+        DallaBannerInfo(memNick: "넷", title: "넷제목", imageBackground: "https://s.pstatic.net/dthumb.phinf/?src=%22https%3A%2F%2Fsports-phinf.pstatic.net%2F20230423_273%2F1682236731250zQknt_JPEG%2F%25C3%25D6%25C0%25BA%25BF%25EC%25B4%25AB%25B9%25B0.jpg%22&type=nf464_260", badgeSpecial: true)
+    ]
+    
     private var session = URLSession(configuration: .default)
     
     private enum NetworkError: Error {
@@ -288,8 +295,21 @@ extension APIService {
         .responseJSON { response in
             switch response.result {
             case .success(let data):
+                var result: [DallaBannerInfo] = []
+                let data = JSON(data)
+                data["BannerList"].forEach { (string, data) in
+                    result.append(
+                        DallaBannerInfo.init(
+                            memNick: data["mem_nick"].stringValue,
+                            title: data["title"].stringValue,
+                            imageBackground: data["image_background"].stringValue,
+                            badgeSpecial: data["badgeSpecial"].intValue == 1
+                        )
+                    )
+                }
                 
-                completion(data)
+                completion(result)
+                
                 break
             case .failure(let error):
                 completion(error)
@@ -307,8 +327,20 @@ extension APIService {
         .responseJSON { response in
             switch response.result {
             case .success(let data):
+                var result: [DallaBannerInfo] = []
+                let data = JSON(data)
+                data["BannerList"].forEach { (string, data) in
+                    result.append(
+                        DallaBannerInfo.init(
+                            memNick: data["mem_nick"].stringValue,
+                            title: data["title"].stringValue,
+                            imageBackground: data["image_background"].stringValue,
+                            badgeSpecial: data["badgeSpecial"].intValue == 1
+                        )
+                    )
+                }
                 
-                completion(data)
+                completion(result)
                 break
             case .failure(let error):
                 completion(error)
@@ -321,4 +353,6 @@ extension APIService {
         session.invalidateAndCancel()
         session = URLSession(configuration: .default)
     }
+    
+    
 }

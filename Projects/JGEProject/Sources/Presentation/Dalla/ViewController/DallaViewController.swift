@@ -4,6 +4,8 @@ import Then
 import SwiftyJSON
 
 class DallaViewController: UIViewController, TabBarItemRootViewController {
+    var viewModel = DallaViewModel()
+    
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -33,8 +35,8 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         $0.axis = .vertical
     }
     
-    var topTenSection = SectionView(title: "NOW TOP 10", hasTabBar: true)
-    var newBjSection = SectionView(title: "NEW BJ")
+    lazy var topTenSection = SectionView(viewModel: viewModel, title: "🏆 NOW TOP 10", hasTabBar: true)
+    lazy var newBjSection = SectionView(viewModel: viewModel, title: "🌱 NEW BJ")
     
     
     var topTenWrapperView = UIStackView().then {
@@ -44,13 +46,13 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         $0.axis = .vertical
     }
     
-    lazy var userListScrollView = UserListScrollView(shouldShowNameLabel: false)
+    lazy var topTenScrollView = UserListScrollView(viewModel: viewModel, isRanking: true)
     
-    lazy var newBjListScrollView = UserListScrollView(shouldShowNameLabel: true)
+    lazy var newBjListScrollView = UserListScrollView(viewModel: viewModel, isRanking: false)
     
-    var mainBannerScrollView = MainBannerImageScrollView()
+    lazy var mainBannerScrollView = MainBannerImageScrollView(viewModel: viewModel)
     
-    var favoriteScrollView = FavoriteListScrollView()
+    lazy var favoriteScrollView = FavoriteListScrollView(viewModel: viewModel)
     
     
     
@@ -74,6 +76,12 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         setConstraints()
         setData()
         
+        for family: String in UIFont.familyNames {
+                        print(family)
+                        for names : String in UIFont.fontNames(forFamilyName: family){
+                            print("=== \(names)")
+                        }
+                    }
     }
     
     
@@ -105,7 +113,7 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         contentStackView.addArrangedSubview(newBjWrapperView)
         
         topTenWrapperView.addArrangedSubview(topTenSection)
-        topTenWrapperView.addArrangedSubview(userListScrollView)
+        topTenWrapperView.addArrangedSubview(topTenScrollView)
         
         newBjWrapperView.addArrangedSubview(newBjSection)
         newBjWrapperView.addArrangedSubview(newBjListScrollView)
@@ -177,11 +185,17 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         contentScrollView.showsVerticalScrollIndicator = false
         contentScrollView.canCancelContentTouches = true
         
-        APIService.shared.getDallaBannerData { [weak self] response in
-            guard let self = self else { return }
-            let json = JSON(response)
+//        self.mainBannerScrollView.initialize(data: APIService.shared.mock)
+  
+        self.viewModel.changeData(to: APIService.shared.mock)
+        
+        APIService.shared.getDallaBannerData { [weak self] data in
+            guard let self = self,
+                  let data = data as? [DallaBannerInfo] else { return }
             
-            self.mainBannerScrollView.initialize(data: json["BannerList"])
+            self.viewModel.changeData(to: data)
+
+//            self.mainBannerScrollView.initialize(data: data)
         }
         favoriteScrollView.initialize()
     }

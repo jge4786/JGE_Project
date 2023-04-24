@@ -41,13 +41,16 @@ final class UserView: UIButton {
         super.init(coder: coder)
     }
     
-    func initialize(isRanking: Bool, ranking: Int = 0, status: LiveStatus = .none) {
+    func initialize(data: DallaBannerInfo?, isRanking: Bool, ranking: Int = 0, status: LiveStatus = .none) {
+        self.kf.setImage(with: URL(string: data?.imageBackground ?? ""), for: .normal, placeholder: UIImage(named: "defaultImage"))
+        
         if isRanking {
             rankingImageView.isHidden = false
             rankingImageView.image = UIImage(named: "numberW\(ranking)") ?? nil
             nameLabel.isHidden = true
         } else {
             rankingImageView.isHidden = true
+            nameLabel.text = data?.memNick ?? "홍길동"
             nameLabel.isHidden = false
         }
     }
@@ -72,26 +75,25 @@ final class UserView: UIButton {
         }
         
         rankingImageView.snp.makeConstraints {
-            $0.bottom.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(8)
+            $0.trailing.equalToSuperview().inset(3)
             $0.width.height.equalTo(49)
         }
         nameLabel.snp.makeConstraints {
-            $0.leading.bottom.equalToSuperview()
+            $0.leading.bottom.equalToSuperview().inset(8)
         }
-        
-//        if isRanking {
-//            rankingImageView.snp.makeConstraints {
-//                $0.bottom.trailing.equalToSuperview()
-//                $0.width.height.equalTo(49)
-//            }
-//        } else {
-//            nameLabel.snp.makeConstraints {
-//                $0.leading.bottom.equalToSuperview()
-//            }
-//        }
     }
     
     func setData(status: LiveStatus) {
+        self.clipsToBounds = true
+        self.layer.cornerRadius = 8
+        
+        nameLabel.attributedText = FontFactory().getFont(text: nameLabel.text ?? "",
+                                                         font: .suit,
+                                                         weight: .medium,
+                                                         size: 13,
+                                                         color: .white)
+        
         self.setTitle("", for: .normal)
         
         switch status {

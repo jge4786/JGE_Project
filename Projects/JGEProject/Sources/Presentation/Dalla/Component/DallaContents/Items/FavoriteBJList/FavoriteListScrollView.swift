@@ -3,6 +3,23 @@ import SnapKit
 import Then
 
 class FavoriteListScrollView: UIScrollView {
+    var data: [DallaBannerInfo] = APIService.shared.mock
+    var viewModel: DallaViewModel?
+    
+    init(viewModel: DallaViewModel) {
+        super.init(frame: .zero)
+        
+        self.viewModel = viewModel
+        
+        viewModel.listType.bind {
+            $0
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
     func initialize() {
         
         
@@ -25,15 +42,14 @@ class FavoriteListScrollView: UIScrollView {
     }
         
     let itemSize = 80
-    let total = Int.random(in: 20...100)
+    
     func setSubViews() {
         self.addSubview(contentStackView)
         
-        for _ in 1..<10 {
-            let bjView = FavoriteBJView()
-            
+        data.forEach {
+//            let bjView = FavoriteBJView()
+            let bjView = FavoriteBJView(name: $0.memNick , image: $0.imageBackground, isLive: $0.badgeSpecial)
             contentStackView.addArrangedSubview(bjView)
-            
         }
         
         contentStackView.addArrangedSubview(FavoriteBJView())

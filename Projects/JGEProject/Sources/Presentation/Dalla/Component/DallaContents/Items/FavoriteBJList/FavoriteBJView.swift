@@ -1,16 +1,26 @@
 import UIKit
 import SnapKit
 import Then
+import Kingfisher
 
 class FavoriteBJView: UIStackView {
     var isLive = false
-    var image = UIImage(systemName: "cart.fill")
+    var image = ""
     var name = "홍길동"
     
+    let liveColor: [CGColor] = [
+        .init(red: 255/255, green: 60/255, blue: 123/255, alpha: 1.0),
+        .init(red: 255/255, green: 133/255, blue: 101/255, alpha: 1.0)
+    ]
+    
+    let offlineColor: [CGColor] = [
+        .init(red: 204/255, green: 204/255, blue: 204/255, alpha: 1.0),
+        .init(red: 225/255, green: 225/255, blue: 225/255, alpha: 1.0)
+    ]
     
     var profileImageWrapperView = UIView().then {
-        $0.backgroundColor = .red
         $0.layer.cornerRadius = 40
+        $0.clipsToBounds = true
     }
     
     var profileImageOuterView = UIView().then {
@@ -21,17 +31,39 @@ class FavoriteBJView: UIStackView {
     
     lazy var profileImageView = UIButton().then {
         $0.backgroundColor = .white
-        $0.setImage(image, for: .normal)
+        $0.layer.cornerRadius = 35
+        $0.clipsToBounds = true
     }
     
     lazy var nameLabel = UILabel().then {
         $0.text = name
     }
     
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        
+    
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = self.profileImageWrapperView.bounds
+        let colors = isLive ? liveColor : offlineColor
+        
+        gradientLayer.colors = colors
+        
+        self.profileImageWrapperView.layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
+    init(name: String, image: String, isLive: Bool) {
+        super.init(frame: .zero)
+        
+        self.name = name
+        self.image = image
+        self.isLive = isLive
+        
+        initialize()
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        self.initialize()
     }
     
     required init(coder: NSCoder) {
@@ -43,6 +75,8 @@ class FavoriteBJView: UIStackView {
         self.axis = .vertical
         self.alignment = .center
         self.spacing = 6
+        
+        
         setSubViews()
         setConstraints()
         setData()
@@ -71,7 +105,8 @@ class FavoriteBJView: UIStackView {
     }
     
     func setData() {
-        profileImageView.setImage(image, for: .normal)
+        profileImageView.kf.setImage(with: URL(string: image), for: .normal, placeholder: UIImage(systemName: "cart.fill"))
+        
         nameLabel.text = name
     }
 }
