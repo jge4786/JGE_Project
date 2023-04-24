@@ -25,6 +25,24 @@ class MainBannerLabelView: UIView {
         $0.setStyle(spacing: -0.42)
     }
     
+    
+    let colors: [CGColor] = [
+        .init(gray: 1, alpha: 0),
+        .init(gray: 1, alpha: 1)
+    ]
+    lazy var gradientLayer = CAGradientLayer().then {
+        $0.colors = colors
+    }
+    
+    
+    convenience init() {
+        self.init(frame: .zero)
+        
+        gradientLayer.colors = colors
+
+        self.layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -45,6 +63,10 @@ class MainBannerLabelView: UIView {
         titleLabel.text = title
         bjNameLabel.text = bjName
         badgeView.isHidden = !isStar
+        
+        layoutSubviews()
+        
+        gradientLayer.frame = self.bounds
     }
         
     func setSubViews() {
@@ -69,6 +91,7 @@ class MainBannerLabelView: UIView {
         bjNameLabel.snp.makeConstraints {
             $0.leading.equalTo(infoStackView.layoutMargins)
         }
+        setNeedsDisplay()
     }
 }
 

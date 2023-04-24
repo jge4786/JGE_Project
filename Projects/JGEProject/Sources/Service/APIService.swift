@@ -16,7 +16,9 @@ final class APIService {
         DallaBannerInfo(memNick: "하나", title: "하나제목", imageBackground: "https://s.pstatic.net/static/www/mobile/edit/20230422/cropImg_728x360_124104332765696105.jpeg", badgeSpecial: true),
         DallaBannerInfo(memNick: "둘", title: "둘제목", imageBackground: "https://s.pstatic.net/static/www/mobile/edit/20230422/cropImg_728x360_124104265093256215.jpeg", badgeSpecial: false),
         DallaBannerInfo(memNick: "셋", title: "셋제목", imageBackground: "https://s.pstatic.net/dthumb.phinf/?src=%22https%3A%2F%2Fsports-phinf.pstatic.net%2F20230423_163%2F16822610444117scsF_PNG%2F%25BD%25BA%25C5%25A9%25B8%25B0%25BC%25A6_2023-04-23_%25BF%25C0%25C8%25C4_11.43.51.png%22&type=nf728_360", badgeSpecial: false),
-        DallaBannerInfo(memNick: "넷", title: "넷제목", imageBackground: "https://s.pstatic.net/dthumb.phinf/?src=%22https%3A%2F%2Fsports-phinf.pstatic.net%2F20230423_273%2F1682236731250zQknt_JPEG%2F%25C3%25D6%25C0%25BA%25BF%25EC%25B4%25AB%25B9%25B0.jpg%22&type=nf464_260", badgeSpecial: true)
+        DallaBannerInfo(memNick: "넷", title: "넷제목", imageBackground: "https://s.pstatic.net/dthumb.phinf/?src=%22https%3A%2F%2Fsports-phinf.pstatic.net%2F20230423_273%2F1682236731250zQknt_JPEG%2F%25C3%25D6%25C0%25BA%25BF%25EC%25B4%25AB%25B9%25B0.jpg%22&type=nf464_260", badgeSpecial: true),
+        DallaBannerInfo(memNick: "다섯", title: "다섯제목", imageBackground: "https://s.pstatic.net/dthumb.phinf/?src=%22https%3A%2F%2Fs.pstatic.net%2Fpost.phinf%2FMjAyMzA0MThfMjU5%2FMDAxNjgxNzk2MjA5OTg2.JDfy8iZ2z1uFEdMpj28cunfu5Qi9ZS2EFYfQEwTXrksg.6xWtd5WgmMRZ5MbJQwYX9gmvMHRqZ_uGfQpMCmPO2xsg.PNG%2FIA6kbE2Yj1TTuy35BCm_NyGmtVio.jpg%3Ftype%3Df339_222_q90%22&type=nf340_228", badgeSpecial: true),
+        DallaBannerInfo(memNick: "여섯", title: "여섯제목", imageBackground: "https://s.pstatic.net/dthumb.phinf/?src=%22https%3A%2F%2Fs.pstatic.net%2Fpost.phinf%2FMjAyMzA0MjFfMTg3%2FMDAxNjgyMDM4Mzg1MDA0.fRDFU5HOmhFStaEXAGa8idzceKExNR3Uz69uyr-TwLsg.5XVurh48fh8wa-JotzFGojzuzBEhFqwaKEqPfKFvRAMg.PNG%2FIBgvmMbyleTqUwNimVkz4mDRm5bw.jpg%3Ftype%3Df339_222_q90%22&type=nf340_228", badgeSpecial: false)
     ]
     
     private var session = URLSession(configuration: .default)
@@ -307,6 +309,8 @@ extension APIService {
                         )
                     )
                 }
+                
+                result.append(contentsOf: self.mock)
                 
                 completion(result)
                 

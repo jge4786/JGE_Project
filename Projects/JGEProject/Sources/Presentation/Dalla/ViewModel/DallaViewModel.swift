@@ -10,28 +10,24 @@ class DallaViewModel {
     var listType: Observable<TopTenType> = Observable(.bj)
     
     init() {
-//        data = APIService.shared.getDallaBannerData {
-            //            guard let self = self,
-            //                  let data = data as? [DallaBannerInfo] else { return }
-            //
-            //
-            //
-            //            self.mainBannerScrollView.initialize(data: data)
-//        }
-        data.value = APIService.shared.mock
-        changeListType(to: .bj)
+        APIService.shared.getDallaBannerData { [weak self] apiData in
+                        guard let self = self,
+                              let data = apiData as? [DallaBannerInfo] else { return }
+            self.data.value = data
+            self.changeListType(to: .bj)
+        }
     }
     
     func changeListType(to type: TopTenType) {
-//        listType.value = type
+        listType.value = type
         guard let data = data.value else { return }
         switch type {
         case .bj:
-            topList.value = [data[0], data[2]]
+            topList.value = Array(data[0...4])
         case .fan:
-            topList.value = [data[1]]
+            topList.value = [data[5]]
         case .team:
-            topList.value = [data[3]]
+            topList.value = Array(data[6...data.count-1])
         }
     }
     

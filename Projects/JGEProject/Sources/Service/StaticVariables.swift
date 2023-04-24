@@ -62,6 +62,8 @@ struct Color {
     
     static var DallaTextLightBlack: UIColor { return UIColor(red: 48/255, green: 48/255, blue: 48/255, alpha: 1.0)}
     
+    static var DallaTextGray: UIColor { return UIColor(red: 172/255, green: 172/255, blue: 172/255, alpha: 1.0) }
+    
     
     static var Transparent: UIColor { return UIColor(red: 0, green: 0, blue: 0, alpha: 0) }
 }

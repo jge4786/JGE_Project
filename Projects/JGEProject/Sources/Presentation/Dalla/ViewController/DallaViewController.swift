@@ -32,25 +32,28 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         $0.backgroundColor = .clear
     }
     var contentStackView = UIStackView().then {
+        $0.spacing = 24
         $0.axis = .vertical
     }
+    
+    lazy var mainBannerView = MainBannerCollectionView()
     
     lazy var topTenSection = SectionView(viewModel: viewModel, title: "🏆 NOW TOP 10", hasTabBar: true)
     lazy var newBjSection = SectionView(viewModel: viewModel, title: "🌱 NEW BJ")
     
     
     var topTenWrapperView = UIStackView().then {
+        $0.spacing = 12
         $0.axis = .vertical
     }
     var newBjWrapperView = UIStackView().then {
+        $0.spacing = 12
         $0.axis = .vertical
     }
     
     lazy var topTenScrollView = UserListScrollView(viewModel: viewModel, isRanking: true)
     
     lazy var newBjListScrollView = UserListScrollView(viewModel: viewModel, isRanking: false)
-    
-    lazy var mainBannerScrollView = MainBannerImageScrollView(viewModel: viewModel)
     
     lazy var favoriteScrollView = FavoriteListScrollView(viewModel: viewModel)
     
@@ -69,19 +72,16 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         
         
         contentScrollView.delegate = self
-        mainBannerScrollView.delegate = self
+//        mainBannerScrollView.delegate = self
         
+        self.mainBannerView.delegate = self
+        self.mainBannerView.dataSource = self
+        MainBannerCell.register(collectionView: mainBannerView)
         
         setSubview()
         setConstraints()
         setData()
         
-        for family: String in UIFont.familyNames {
-                        print(family)
-                        for names : String in UIFont.fontNames(forFamilyName: family){
-                            print("=== \(names)")
-                        }
-                    }
     }
     
     
@@ -106,7 +106,8 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         view.addSubview(headerWrapeprView)
         
         contentScrollView.addSubview(contentStackView)
-        contentStackView.addArrangedSubview(mainBannerScrollView)
+//        contentStackView.addArrangedSubview(mainBannerScrollView)
+        contentStackView.addArrangedSubview(mainBannerView)
         contentStackView.addArrangedSubview(favoriteScrollView)
         
         contentStackView.addArrangedSubview(topTenWrapperView)
@@ -117,15 +118,7 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
         
         newBjWrapperView.addArrangedSubview(newBjSection)
         newBjWrapperView.addArrangedSubview(newBjListScrollView)
-        
-//        contentStackView.addArrangedSubview(topTenSection)
-//
-//        contentStackView.addArrangedSubview(userListScrollView)
-//
-//        contentStackView.addArrangedSubview(newBjSection)
-//        contentStackView.addArrangedSubview(newBjListScrollView)
-
-        
+                
         headerWrapeprView.addSubview(headerLogoButton)
         view.addSubview(headerViewButtonGroupStackView)
         
@@ -154,7 +147,12 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
             $0.top.leading.bottom.trailing.width.equalToSuperview()
         }
         
-        mainBannerScrollView.snp.makeConstraints {
+//        mainBannerScrollView.snp.makeConstraints {
+//            $0.leading.trailing.equalToSuperview()
+//            $0.height.equalTo(diviceWidth)
+//        }
+        
+        mainBannerView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(diviceWidth)
         }
@@ -184,39 +182,54 @@ class DallaViewController: UIViewController, TabBarItemRootViewController {
     func setData() {
         contentScrollView.showsVerticalScrollIndicator = false
         contentScrollView.canCancelContentTouches = true
-        
-//        self.mainBannerScrollView.initialize(data: APIService.shared.mock)
-  
-        self.viewModel.changeData(to: APIService.shared.mock)
-        
-        APIService.shared.getDallaBannerData { [weak self] data in
-            guard let self = self,
-                  let data = data as? [DallaBannerInfo] else { return }
-            
-            self.viewModel.changeData(to: data)
-
-//            self.mainBannerScrollView.initialize(data: data)
-        }
-        favoriteScrollView.initialize()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        mainBannerScrollView.addTimer()
+        mainBannerView.addTimer()
+//        mainBannerScrollView.addTimer()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        mainBannerScrollView.stopTimer()
+        mainBannerView.stopTimer()
+//        mainBannerScrollView.stopTimer()
+    }
+}
+
+
+extension DallaViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = Constants.deviceSize.width
+        return CGSize(width: width, height: width)
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        guard let count = viewModel.data.value?.count else { return 0 }
+        
+        return count + 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        guard let cell = MainBannerCell.dequeueReusableCell(collectionView: mainBannerView, indexPath: indexPath) else {
+            return UICollectionViewCell()
+        }
+        var index = indexPath.row
+        if index == viewModel.data.value!.count { index = 0 }
+        
+        cell.initialize(data: viewModel.data.value![index])
+        return cell
     }
 }
 
 
 extension DallaViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if let scrollView = scrollView as? MainBannerImageScrollView {
+        if let scrollView = scrollView as? MainBannerCollectionView {
             let offsetX = scrollView.contentOffset.x
             let contentWidth = scrollView.contentSize.width
             let scrollViewWidth = scrollView.frame.width
@@ -234,11 +247,15 @@ extension DallaViewController: UIScrollViewDelegate {
                     viewHeight      = Constants.deviceSize.width,
                     scale           = 1 + (-1 * offsetY / viewHeight)
                 
-                mainBannerScrollView.changeScale(to: scale)
-                mainBannerScrollView.transform = CGAffineTransform(translationX: 0, y: translateValue).scaledBy(x: scale, y: scale)
+//                mainBannerScrollView.changeScale(to: scale)
+//                mainBannerScrollView.transform = CGAffineTransform(translationX: 0, y: translateValue).scaledBy(x: scale, y: scale)
+//                mainBannerView.changeScale(to: scale)
+                mainBannerView.transform = CGAffineTransform(translationX: 0, y: translateValue).scaledBy(x: scale, y: scale)
             } else if offsetY >= 0 {
-                mainBannerScrollView.changeScale(to: 1)
-                mainBannerScrollView.transform = .identity
+//                mainBannerView.changeScale(to: 1)
+                mainBannerView.transform = .identity
+//                mainBannerScrollView.changeScale(to: 1)
+//                mainBannerScrollView.transform = .identity
             }
             
             if offsetY >= 50 && offsetY <= 250 {
@@ -249,15 +266,23 @@ extension DallaViewController: UIScrollViewDelegate {
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        mainBannerScrollView.isHolding = true
-        mainBannerScrollView.suspendTimer()
+        mainBannerView.isHolding = true
+        mainBannerView.suspendTimer()
+//        mainBannerScrollView.isHolding = true
+//        mainBannerScrollView.suspendTimer()
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        mainBannerScrollView.resumeTimer()
+        mainBannerView.resumeTimer()
+        
+        if !decelerate {
+            mainBannerView.isHolding = false
+        }
+//        mainBannerScrollView.resumeTimer()
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        mainBannerScrollView.isHolding = false
+        mainBannerView.isHolding = false
+//        mainBannerScrollView.isHolding = false
     }
 }

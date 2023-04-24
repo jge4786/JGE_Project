@@ -16,40 +16,28 @@ class SectionView: UIStackView {
     
     var viewModel: DallaViewModel?
     
-    lazy var seperatorBar = UIView().then {
+    var firstSeperatorBar = UIView().then {
+        $0.backgroundColor = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1.0)
+    }
+    var secondSeperatorBar = UIView().then {
         $0.backgroundColor = UIColor(red: 204/255, green: 204/255, blue: 204/255, alpha: 1.0)
     }
     
+    var bjButton = TabButton(type: .bj)
     
-    var bjButton = UIButton().then {
-        $0.backgroundColor = .white
-        $0.setAttributedTitle(
-            FontFactory().getFont(text: "BJ", font: .suit, weight: .bold, size: 14, color: .black)
-            , for: .normal)
-    }
+    var fanButton = TabButton(type: .fan)
     
-    var fanButton = UIButton().then {
-        $0.backgroundColor = .white
-        $0.setAttributedTitle(
-            FontFactory().getFont(text: "FAN", font: .suit, weight: .bold, size: 14, color: .black)
-            , for: .normal)
-    }
-    
-    var teamButton = UIButton().then {
-        $0.backgroundColor = .white
-        $0.setAttributedTitle(
-            FontFactory().getFont(text: "TEAM", font: .suit, weight: .bold, size: 14, color: .black)
-            , for: .normal)
-    }
-    
+    var teamButton = TabButton(type: .team)
     
     convenience init(viewModel: DallaViewModel, title: String, hasTabBar: Bool = false) {
         self.init(frame: .zero)
-        
+        self.title = title
+        self.hasTabBar = hasTabBar
         self.viewModel = viewModel
-        setSubViews( hasTabBar: hasTabBar)
+        
+        setSubViews()
         setConstraints()
-        setData(title: title)
+        setData()
     }
     
     override init(frame: CGRect) {
@@ -60,15 +48,15 @@ class SectionView: UIStackView {
         super.init(coder: coder)
     }
     
-    func setSubViews( hasTabBar: Bool) {
+    func setSubViews() {
         self.addArrangedSubview(titleButton)
         
         if hasTabBar {
             self.addArrangedSubview(sectionTabBar)
             sectionTabBar.addArrangedSubview(bjButton)
-            sectionTabBar.addArrangedSubview(seperatorBar)
+            sectionTabBar.addArrangedSubview(firstSeperatorBar)
             sectionTabBar.addArrangedSubview(fanButton)
-            sectionTabBar.addArrangedSubview(seperatorBar)
+            sectionTabBar.addArrangedSubview(secondSeperatorBar)
             sectionTabBar.addArrangedSubview(teamButton)
         } else {
             self.addArrangedSubview(UIView())
@@ -76,12 +64,24 @@ class SectionView: UIStackView {
     }
     
     func setConstraints() {
-        sectionTabBar.snp.makeConstraints {
+        self.snp.makeConstraints {
+            $0.height.equalTo(26)
+        }
+        
+        guard hasTabBar else { return }
+        firstSeperatorBar.snp.makeConstraints {
+            $0.width.equalTo(1)
+            $0.height.equalTo(10)
+        }
+        
+        secondSeperatorBar.snp.makeConstraints {
+            $0.width.equalTo(1)
             $0.height.equalTo(10)
         }
     }
     
-    func setData(title: String) {
+    func setData() {
+        self.alignment = .center
         self.isLayoutMarginsRelativeArrangement = true
         self.layoutMargins = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         
@@ -99,15 +99,27 @@ class SectionView: UIStackView {
     @objc
     func onPressBJButton() {
         viewModel?.changeListType(to: .bj)
+        
+        self.bjButton.changeSelectedState(to: true)
+        self.fanButton.changeSelectedState(to: false)
+        self.teamButton.changeSelectedState(to: false)
     }
     
     @objc
     func onPressFanButton() {
         viewModel?.changeListType(to: .fan)
+        
+        self.bjButton.changeSelectedState(to: false)
+        self.fanButton.changeSelectedState(to: true)
+        self.teamButton.changeSelectedState(to: false)
     }
     
     @objc
     func onPressTeamButton() {
         viewModel?.changeListType(to: .team)
+        
+        self.bjButton.changeSelectedState(to: false)
+        self.fanButton.changeSelectedState(to: false)
+        self.teamButton.changeSelectedState(to: true)
     }
 }

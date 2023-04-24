@@ -72,4 +72,15 @@ class FontFactory {
         
         return string
     }
+    
+    func changeColor(
+        text: NSAttributedString,
+        color: UIColor
+    ) -> NSAttributedString {
+        var string = NSMutableAttributedString(attributedString: text)
+        
+        string.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: text.length))
+        
+        return string
+    }
 }

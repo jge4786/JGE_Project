@@ -3,7 +3,7 @@ import SnapKit
 import Then
 
 class FavoriteListScrollView: UIScrollView {
-    var data: [DallaBannerInfo] = APIService.shared.mock
+    var data: [DallaBannerInfo]?
     var viewModel: DallaViewModel?
     
     init(viewModel: DallaViewModel) {
@@ -11,8 +11,15 @@ class FavoriteListScrollView: UIScrollView {
         
         self.viewModel = viewModel
         
-        viewModel.listType.bind {
-            $0
+        viewModel.data.bind { [weak self] vmData in
+            guard let self = self,
+                  let data = vmData
+            else {
+                return
+            }
+            
+            self.data = data
+            self.initialize()
         }
     }
     
@@ -46,7 +53,7 @@ class FavoriteListScrollView: UIScrollView {
     func setSubViews() {
         self.addSubview(contentStackView)
         
-        data.forEach {
+        data?.forEach {
 //            let bjView = FavoriteBJView()
             let bjView = FavoriteBJView(name: $0.memNick , image: $0.imageBackground, isLive: $0.badgeSpecial)
             contentStackView.addArrangedSubview(bjView)
